@@ -96,6 +96,14 @@ static void gst_realsense_src_get_property (GObject * object, guint prop_id,
 
 static GstFlowReturn gst_realsense_src_create (GstPushSrc * src, GstBuffer ** buf);
 
+rs2::temporal_filter temp_filter;
+rs2::hole_filling_filter hole_filling_filter;
+
+temp_filter.set_option(RS2_OPTION_FRAMES_QUEUE_SIZE, 16);
+temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, 0.08);
+temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, 80);
+temp_filter.set_option(RS2_OPTION_HOLES_FILL, 8);
+
 static gboolean gst_realsense_src_start (GstBaseSrc * basesrc);
 static gboolean gst_realsense_src_stop (GstBaseSrc * basesrc);
 static GstCaps *gst_realsense_src_get_caps (GstBaseSrc * src, GstCaps * filter);
@@ -315,6 +323,7 @@ gst_realsense_src_create (GstPushSrc * psrc, GstBuffer ** buf)
     auto frame_set = src->rs_pipeline->wait_for_frames();
     if(src->aligner != nullptr)
       frame_set = src->aligner->process(frame_set);
+      frame_set = frame_set.apply_filter(temp_filter);
     
     GST_CAT_DEBUG(gst_realsense_src_debug, "received frame from realsense");
 
@@ -493,12 +502,29 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
       	cfg.enable_stream(RS2_STREAM_ACCEL, RS2_FORMAT_MOTION_XYZ32F);      
       	cfg.enable_stream(RS2_STREAM_GYRO, RS2_FORMAT_MOTION_XYZ32F);
       }
-      cfg.enable_stream(RS2_STREAM_COLOR, RS2_FORMAT_RGB8);
-      cfg.enable_stream(RS2_STREAM_DEPTH, RS2_FORMAT_Z16);
+      cfg.enable_stream(RS2_STREAM_COLOR, 4160, 3120, RS2_FORMAT_RGB8, 15);
+      cfg.enable_stream(RS2_STREAM_DEPTH, 848, 480, RS2_FORMAT_Z16, 15);
       // auto profile = src->rs_pipeline->get_active_profile();
       // auto streams = profile.get_streams();     
       // auto s0 = streams[0].get();
-           
+
+      // declare filters: hole_filling and temporal
+      rs2::temporal_filter temp_filter;
+      rs2::hole_filling_filter hole_filling_filter;
+
+      temp_filter.set_option(RS2_OPTION_FRAMES_QUEUE_SIZE, 16);
+      temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, 0.08);
+      temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, 80);
+      temp_filter.set_option(RS2_OPTION_HOLES_FILL, 8);
+      // todo: if settings provided
+      //temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, filters_cfg.temporal_alpha);
+      //temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, filters_cfg.temporal_delta);
+      //temp_filter.set_option(RS2_OPTION_HOLES_FILL, filters_cfg.temporal_persistence);
+      //109122072468
+
+      //hole_filling_filter.set_option(RS2_OPTION_HOLES_FILL, float(filters_cfg.holes_filling_mode));
+      //auto processed_frame = temp_filter.process(depth_frame);
+
       switch(src->align)
       {
         case Align::None:
@@ -520,6 +546,7 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
       auto frame_set = src->rs_pipeline->wait_for_frames();
       if(src->aligner != nullptr)
         frame_set = src->aligner->process(frame_set);
+        frame_set = frame_set.apply_filter(temp_filter);
       
       int height = 0;
       int width = 0;
