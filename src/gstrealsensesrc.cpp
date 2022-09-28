@@ -65,6 +65,9 @@ enum
   PROP_IMU_ON
 };
 
+rs2::temporal_filter temp_filter;
+rs2::hole_filling_filter hole_filling_filter;
+
 /* the capabilities of the inputs and outputs.
  */
 #define RSS_VIDEO_CAPS GST_VIDEO_CAPS_MAKE (GST_VIDEO_FORMATS_ALL) "," \
@@ -95,14 +98,6 @@ static void gst_realsense_src_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
 static GstFlowReturn gst_realsense_src_create (GstPushSrc * src, GstBuffer ** buf);
-
-rs2::temporal_filter temp_filter;
-rs2::hole_filling_filter hole_filling_filter;
-
-temp_filter.set_option(RS2_OPTION_FRAMES_QUEUE_SIZE, 16);
-temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, 0.08);
-temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, 80);
-temp_filter.set_option(RS2_OPTION_HOLES_FILL, 8);
 
 static gboolean gst_realsense_src_start (GstBaseSrc * basesrc);
 static gboolean gst_realsense_src_stop (GstBaseSrc * basesrc);
@@ -311,6 +306,15 @@ static void calculate_frame_rate(GstRealsenseSrc* src, GstClockTime new_time)
 static GstFlowReturn
 gst_realsense_src_create (GstPushSrc * psrc, GstBuffer ** buf)
 {
+  //printf("Expensive...\n");
+//  rs2::temporal_filter temp_filter;
+//  rs2::hole_filling_filter hole_filling_filter;
+
+  temp_filter.set_option(RS2_OPTION_FRAMES_QUEUE_SIZE, 16);
+  temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, 0.08);
+  temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, 80);
+  temp_filter.set_option(RS2_OPTION_HOLES_FILL, 8);
+      
   GstRealsenseSrc *src = GST_REALSENSESRC (psrc);
   
   GST_LOG_OBJECT (src, "create");
@@ -320,11 +324,12 @@ gst_realsense_src_create (GstPushSrc * psrc, GstBuffer ** buf)
   /* wait for next frame to be available */
   try 
   {
+
     auto frame_set = src->rs_pipeline->wait_for_frames();
     if(src->aligner != nullptr)
       frame_set = src->aligner->process(frame_set);
       frame_set = frame_set.apply_filter(temp_filter);
-    
+       
     GST_CAT_DEBUG(gst_realsense_src_debug, "received frame from realsense");
 
     /* create GstBuffer then release */
@@ -497,20 +502,30 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
 
       cfg.enable_device(serial_number);
 
+      //src->has_imu = check_imu_is_supported(src->rs_pipeline->get_active_profile().get_device());
       src->has_imu = check_imu_is_supported(dev_list[dev_idx]);
+
+      // https://github.com/IntelRealSense/librealsense/blob/5ff27fca5aaeec4736d6bb3bfb958fee82ee198b/doc/d435i.md
+      // Only enable if we have IMU and enable it. This fails with D435i when not enabled.
       if(src->has_imu && src->imu_on) {
       	cfg.enable_stream(RS2_STREAM_ACCEL, RS2_FORMAT_MOTION_XYZ32F);      
       	cfg.enable_stream(RS2_STREAM_GYRO, RS2_FORMAT_MOTION_XYZ32F);
       }
+
+
       cfg.enable_stream(RS2_STREAM_COLOR, 4160, 3120, RS2_FORMAT_RGB8, 15);
       cfg.enable_stream(RS2_STREAM_DEPTH, 848, 480, RS2_FORMAT_Z16, 15);
+
+      //cfg.enable_stream(RS2_STREAM_COLOR, RS2_FORMAT_RGB8);
+      //cfg.enable_stream(RS2_STREAM_DEPTH, RS2_FORMAT_Z16);
       // auto profile = src->rs_pipeline->get_active_profile();
       // auto streams = profile.get_streams();     
       // auto s0 = streams[0].get();
 
       // declare filters: hole_filling and temporal
-      rs2::temporal_filter temp_filter;
-      rs2::hole_filling_filter hole_filling_filter;
+      printf("Expensive1...\n");
+//      rs2::temporal_filter temp_filter;
+//      rs2::hole_filling_filter hole_filling_filter;
 
       temp_filter.set_option(RS2_OPTION_FRAMES_QUEUE_SIZE, 16);
       temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, 0.08);
@@ -525,6 +540,9 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
       //hole_filling_filter.set_option(RS2_OPTION_HOLES_FILL, float(filters_cfg.holes_filling_mode));
       //auto processed_frame = temp_filter.process(depth_frame);
 
+
+
+           
       switch(src->align)
       {
         case Align::None:
@@ -544,6 +562,7 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
       GST_LOG_OBJECT(src, "RealSense pipeline started");
 
       auto frame_set = src->rs_pipeline->wait_for_frames();
+       
       if(src->aligner != nullptr)
         frame_set = src->aligner->process(frame_set);
         frame_set = frame_set.apply_filter(temp_filter);
@@ -588,9 +607,9 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
           constexpr auto imu_size = 2 * sizeof(rs2_vector);
           // add enough for imu data
           height += std::ceil(imu_size / cframe.get_stride_in_bytes()); 
-        }
+        }        
       }
-     
+      
       gst_video_info_init(&src->info);
       
       if(fmt ==GST_VIDEO_FORMAT_UNKNOWN)
