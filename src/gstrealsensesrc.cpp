@@ -129,20 +129,12 @@ gst_realsense_src_class_init (GstRealsenseSrcClass * klass)
     "Source element for Intel RealSense multiplexed video, depth and IMU data",
     "Tim Connelly/WKD.SMRT <<timpconnelly@gmail.com>>");
 
-  // gst_element_class_add_pad_template (gstelement_class,
-  //     gst_static_pad_template_get (&src_factory));
   gst_element_class_add_static_pad_template (gstelement_class, &src_factory);
 
   gstbasesrc_class->get_caps = gst_realsense_src_get_caps;
   gstbasesrc_class->set_caps = gst_realsense_src_set_caps;
-  // gstbasesrc_class->fixate = gst_video_test_src_src_fixate;
-  // gstbasesrc_class->is_seekable = gst_video_test_src_is_seekable;
-  // gstbasesrc_class->do_seek = gst_video_test_src_do_seek;
-  // gstbasesrc_class->query = gst_video_test_src_query;
-  // gstbasesrc_class->get_times = gst_video_test_src_get_times;
   gstbasesrc_class->start = gst_realsense_src_start;
   gstbasesrc_class->stop = gst_realsense_src_stop;
-  // gstbasesrc_class->decide_allocation = gst_video_test_src_decide_allocation;
   gstbasesrc_class->unlock = GST_DEBUG_FUNCPTR (gst_realsense_src_unlock);
   gstbasesrc_class->unlock_stop = GST_DEBUG_FUNCPTR (gst_realsense_src_unlock_stop);
 
@@ -306,9 +298,6 @@ static void calculate_frame_rate(GstRealsenseSrc* src, GstClockTime new_time)
 static GstFlowReturn
 gst_realsense_src_create (GstPushSrc * psrc, GstBuffer ** buf)
 {
-  //printf("Expensive...\n");
-//  rs2::temporal_filter temp_filter;
-//  rs2::hole_filling_filter hole_filling_filter;
 
   temp_filter.set_option(RS2_OPTION_FRAMES_QUEUE_SIZE, 16);
   temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, 0.08);
@@ -453,7 +442,6 @@ static gboolean
 gst_realsense_src_start (GstBaseSrc * basesrc)
 {
   auto *src = GST_REALSENSESRC (basesrc);
-  // GST_OBJECT_LOCK (src);
 
   try 
   {
@@ -504,7 +492,6 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
 
       cfg.enable_device(serial_number);
 
-      //src->has_imu = check_imu_is_supported(src->rs_pipeline->get_active_profile().get_device());
       src->has_imu = check_imu_is_supported(dev_list[dev_idx]);
 
       // https://github.com/IntelRealSense/librealsense/blob/5ff27fca5aaeec4736d6bb3bfb958fee82ee198b/doc/d435i.md
@@ -515,35 +502,16 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
       }
 
 
-      cfg.enable_stream(RS2_STREAM_COLOR, 4160, 3120, RS2_FORMAT_RGB8, 15);
-      cfg.enable_stream(RS2_STREAM_DEPTH, 848, 480, RS2_FORMAT_Z16, 15);
-
-      //cfg.enable_stream(RS2_STREAM_COLOR, RS2_FORMAT_RGB8);
-      //cfg.enable_stream(RS2_STREAM_DEPTH, RS2_FORMAT_Z16);
-      // auto profile = src->rs_pipeline->get_active_profile();
-      // auto streams = profile.get_streams();     
-      // auto s0 = streams[0].get();
+      cfg.enable_stream(RS2_STREAM_COLOR, RS2_FORMAT_RGB8, 15);
+      cfg.enable_stream(RS2_STREAM_DEPTH, RS2_FORMAT_Z16, 15);
 
       // declare filters: hole_filling and temporal
       printf("Expensive1...\n");
-//      rs2::temporal_filter temp_filter;
-//      rs2::hole_filling_filter hole_filling_filter;
 
       temp_filter.set_option(RS2_OPTION_FRAMES_QUEUE_SIZE, 16);
       temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, 0.08);
       temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, 80);
       temp_filter.set_option(RS2_OPTION_HOLES_FILL, 8);
-      // todo: if settings provided
-      //temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, filters_cfg.temporal_alpha);
-      //temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, filters_cfg.temporal_delta);
-      //temp_filter.set_option(RS2_OPTION_HOLES_FILL, filters_cfg.temporal_persistence);
-      //109122072468
-
-      //hole_filling_filter.set_option(RS2_OPTION_HOLES_FILL, float(filters_cfg.holes_filling_mode));
-      //auto processed_frame = temp_filter.process(depth_frame);
-
-
-
            
       switch(src->align)
       {
@@ -639,8 +607,6 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
   src->height = src->info.height;
   src->gst_stride = GST_VIDEO_INFO_COMP_STRIDE (&src->info, 0);
   
-  // GST_OBJECT_UNLOCK (src);
-
   return TRUE;
 }
 
@@ -686,7 +652,6 @@ gst_realsense_src_set_caps (GstBaseSrc * bsrc, GstCaps * caps)
 {
   GstRealsenseSrc *src = GST_REALSENSESRC (bsrc);
   GstVideoInfo vinfo;
-  // GstStructure *s = gst_caps_get_structure (caps, 0);
 
   GST_DEBUG_OBJECT (src, "The caps being set are %" GST_PTR_FORMAT, caps);
 
