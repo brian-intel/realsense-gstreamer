@@ -326,9 +326,9 @@ gst_realsense_src_create (GstPushSrc * psrc, GstBuffer ** buf)
   {
 
     auto frame_set = src->rs_pipeline->wait_for_frames();
+    frame_set = frame_set.apply_filter(temp_filter);
     if(src->aligner != nullptr)
       frame_set = src->aligner->process(frame_set);
-      frame_set = frame_set.apply_filter(temp_filter);
        
     GST_CAT_DEBUG(gst_realsense_src_debug, "received frame from realsense");
 
@@ -563,9 +563,9 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
 
       auto frame_set = src->rs_pipeline->wait_for_frames();
        
+      frame_set = frame_set.apply_filter(temp_filter);
       if(src->aligner != nullptr)
         frame_set = src->aligner->process(frame_set);
-        frame_set = frame_set.apply_filter(temp_filter);
       
       int height = 0;
       int width = 0;
