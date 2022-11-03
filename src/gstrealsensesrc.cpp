@@ -324,7 +324,7 @@ gst_realsense_src_create (GstPushSrc * psrc, GstBuffer ** buf)
     if(src->aligner != nullptr)
     {
       frame_set = src->aligner->process(frame_set);
-      // frame_set = frame_set.apply_filter(temp_filter);
+      frame_set = frame_set.apply_filter(temp_filter);
     }
     
     GST_CAT_DEBUG(gst_realsense_src_debug, "received frame from realsense");
@@ -509,8 +509,8 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
       // auto profile = src->rs_pipeline->get_active_profile();
       // auto streams = profile.get_streams();     
       // auto s0 = streams[0].get();
-      // cfg.enable_stream(RS2_STREAM_COLOR, RS2_FORMAT_RGB8, 15);
-      // cfg.enable_stream(RS2_STREAM_DEPTH, RS2_FORMAT_Z16, 15);
+      // cfg.enable_stream(RS2_STREAM_COLOR, 4160, 3120, RS2_FORMAT_RGB8, 15);
+      // cfg.enable_stream(RS2_STREAM_DEPTH, 848, 480, RS2_FORMAT_Z16, 15);
 
       switch(src->align)
       {
@@ -534,7 +534,7 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
       if(src->aligner != nullptr)
       {
         frame_set = src->aligner->process(frame_set);
-        // frame_set = frame_set.apply_filter(temp_filter);
+        frame_set = frame_set.apply_filter(temp_filter);
       }
       
       int height = 0;
