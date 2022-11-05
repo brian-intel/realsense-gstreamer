@@ -478,24 +478,24 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
       {
         serial_number = std::string(dev_list[dev_idx].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER));
       }
-  //     else
-  //     {
-	// for (; dev_idx < dev_list.size(); dev_idx++) { 
-  //         if (0 == serial_number.compare(dev_list[dev_idx].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)))
-  //         {
-  //           break;
-  //         }
-  //       }
-        
-  //       if (dev_idx == dev_list.size())
-  //       {
-	//   dev_idx = 0;
-  //         GST_ELEMENT_WARNING(src, RESOURCE, FAILED,
-  //                             ("Specified serial number %s not found. Using first found device.", src->serial_number.c_str()),
-  //                             (NULL));
-  //         serial_number = dev_list[dev_idx].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
-  //       }
-  //     }
+      else
+      {
+          for (; dev_idx < dev_list.size(); dev_idx++) { 
+                  if (0 == serial_number.compare(dev_list[dev_idx].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)))
+                  {
+                    break;
+                  }
+                }
+                
+                if (dev_idx == dev_list.size())
+                {
+            dev_idx = 0;
+                  GST_ELEMENT_WARNING(src, RESOURCE, FAILED,
+                                      ("Specified serial number %s not found. Exiting program.", src->serial_number.c_str()),
+                                      (NULL));
+                  exit(12);
+                }
+      }
 
       cfg.enable_device(serial_number);
 
