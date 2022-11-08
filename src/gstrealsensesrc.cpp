@@ -493,7 +493,7 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
                   GST_ELEMENT_WARNING(src, RESOURCE, FAILED,
                                       ("Specified serial number %s not found. Exiting program.", src->serial_number.c_str()),
                                       (NULL));
-                  exit(12);
+                  return 1;
                 }
       }
 
