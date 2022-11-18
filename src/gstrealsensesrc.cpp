@@ -504,13 +504,13 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
       	cfg.enable_stream(RS2_STREAM_ACCEL, RS2_FORMAT_MOTION_XYZ32F);      
       	cfg.enable_stream(RS2_STREAM_GYRO, RS2_FORMAT_MOTION_XYZ32F);
       }
-      // cfg.enable_stream(RS2_STREAM_COLOR, RS2_FORMAT_RGB8);
-      // cfg.enable_stream(RS2_STREAM_DEPTH, RS2_FORMAT_Z16);
+      cfg.enable_stream(RS2_STREAM_COLOR, RS2_FORMAT_RGB8);
+      cfg.enable_stream(RS2_STREAM_DEPTH, RS2_FORMAT_Z16);
       // auto profile = src->rs_pipeline->get_active_profile();
       // auto streams = profile.get_streams();     
       // auto s0 = streams[0].get();
-      cfg.enable_stream(RS2_STREAM_COLOR, 1920, 1080, RS2_FORMAT_RGB8, 15);
-      cfg.enable_stream(RS2_STREAM_DEPTH, 848, 480, RS2_FORMAT_Z16, 15);
+      // cfg.enable_stream(RS2_STREAM_COLOR, 1920, 1080, RS2_FORMAT_RGB8, 15);
+      // cfg.enable_stream(RS2_STREAM_DEPTH, 848, 480, RS2_FORMAT_Z16, 15);
 
       switch(src->align)
       {
