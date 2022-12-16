@@ -62,7 +62,10 @@ enum
   PROP_CAM_SN,
   PROP_ALIGN,
   PROP_DEPTH_ON,
-  PROP_IMU_ON
+  PROP_IMU_ON,
+  PROP_WIDTH,
+  PROP_HEIGHT,
+  PROP_FPS
 };
 
 rs2::temporal_filter temp_filter;
@@ -236,6 +239,15 @@ gst_realsense_src_get_property (GObject * object, guint prop_id, GValue * value,
       break;
     case PROP_IMU_ON:
       g_value_set_boolean(value, src->imu_on);
+      break;
+    case PROP_WIDTH:
+      g_value_set_int(value, src->width);
+      break;
+    case PROP_HEIGHT:
+      g_value_set_int(value, src->height);
+      break;
+    case PROP_FPS:
+      g_value_set_int(value, src->fps);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -509,8 +521,8 @@ gst_realsense_src_start (GstBaseSrc * basesrc)
       // auto profile = src->rs_pipeline->get_active_profile();
       // auto streams = profile.get_streams();     
       // auto s0 = streams[0].get();
-      cfg.enable_stream(RS2_STREAM_COLOR, 1920, 1080, RS2_FORMAT_RGB8, 15);
-      cfg.enable_stream(RS2_STREAM_DEPTH, 848, 480, RS2_FORMAT_Z16, 15);
+      cfg.enable_stream(RS2_STREAM_COLOR, src->width, src->height, RS2_FORMAT_RGB8, src->fps);
+      cfg.enable_stream(RS2_STREAM_DEPTH, src->width, src->height, RS2_FORMAT_Z16, src->fps);
 
       switch(src->align)
       {

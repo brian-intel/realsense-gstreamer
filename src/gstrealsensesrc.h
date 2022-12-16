@@ -81,6 +81,9 @@ struct _GstRealsenseSrc
   std::string serial_number;
   StreamType stream_type = StreamType::StreamDepth;
   bool imu_on = true;
+  int width = 1920;
+  int height = 1080;
+  int fps = 15;
 };
 
 struct _GstRealsenseSrcClass 
