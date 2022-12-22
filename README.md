@@ -82,6 +82,7 @@ The stream-type property can control which video feed is created by the source: 
 ### Depth Params
 The depth paramaters allows you to modify depth stream settings
 | param | type | example |
+|--- | --- | --- |
 | PROP_DEPTH_WIDTH | int | 1920 |
 | PROP_DEPTH_HEIGHT | int | 1080 |
 | PROP_DEPTH_FRAMERATE | int | 30 |
@@ -89,6 +90,7 @@ The depth paramaters allows you to modify depth stream settings
 ### Color params
 The color paramaters allows you to modify color stream settings
 | param | type | example |
+|--- | --- | --- |
 | PROP_COLOR_WIDTH | int | 1920 |
 | PROP_COLOR_HEIGHT | int | 1080 |
 | PROP_COLOR_FRAMERATE | int | 30 |
