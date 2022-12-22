@@ -83,17 +83,17 @@ The stream-type property can control which video feed is created by the source: 
 The depth paramaters allows you to modify depth stream settings
 | param | type | example |
 |--- | --- | --- |
-| PROP_DEPTH_WIDTH | int | 1920 |
-| PROP_DEPTH_HEIGHT | int | 1080 |
-| PROP_DEPTH_FRAMERATE | int | 30 |
+| depth_width | int | 1920 |
+| depth_height | int | 1080 |
+| depth_framerate | int | 30 |
 
 ### Color params
 The color paramaters allows you to modify color stream settings
 | param | type | example |
 |--- | --- | --- |
-| PROP_COLOR_WIDTH | int | 1920 |
-| PROP_COLOR_HEIGHT | int | 1080 |
-| PROP_COLOR_FRAMERATE | int | 30 |
+| color_width | int | 1920 |
+| color_height | int | 1080 |
+| color_framerate | int | 30 |
 
 #### Example
 The following gst-launch command exercises all the configurable properties of the source element.
