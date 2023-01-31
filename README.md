@@ -85,7 +85,7 @@ The depth paramaters allows you to modify depth stream settings
 |--- | --- | --- |
 | depth_width | int | 1920 |
 | depth_height | int | 1080 |
-| depth_framerate | int | 30 |
+| depth_framerate | int | 15 |
 
 ### Color params
 The color paramaters allows you to modify color stream settings
@@ -93,7 +93,7 @@ The color paramaters allows you to modify color stream settings
 |--- | --- | --- |
 | color_width | int | 1920 |
 | color_height | int | 1080 |
-| color_framerate | int | 30 |
+| color_framerate | int | 15 |
 
 #### Example
 The following gst-launch command exercises all the configurable properties of the source element.

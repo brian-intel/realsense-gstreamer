@@ -180,6 +180,54 @@ gst_realsense_src_class_init (GstRealsenseSrcClass * klass)
           (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
         )
     );
+
+    g_object_class_install_property (gobject_class, PROP_CAM_SN,
+    g_param_spec_string ("depth_width", "Depth Width",
+          "Change the depth width (Default 1920)",
+          "",
+          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
+        )
+    );
+
+    g_object_class_install_property (gobject_class, PROP_CAM_SN,
+    g_param_spec_string ("depth_height", "Depth Height",
+          "Change the depth height (Default 1080)",
+          "",
+          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
+        )
+    );
+
+    g_object_class_install_property (gobject_class, PROP_CAM_SN,
+    g_param_spec_string ("depth_framerate", "Depth Framerate",
+          "Change the depth framerate (Default 15)",
+          "",
+          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
+        )
+    );
+
+    g_object_class_install_property (gobject_class, PROP_CAM_SN,
+    g_param_spec_string ("color_width", "Color Width",
+          "Change the color width (Default 1920)",
+          "",
+          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
+        )
+    );
+
+    g_object_class_install_property (gobject_class, PROP_CAM_SN,
+    g_param_spec_string ("color_height", "Color Height",
+          "Change the color height (Default 1080)",
+          "",
+          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
+        )
+    );
+
+    g_object_class_install_property (gobject_class, PROP_CAM_SN,
+    g_param_spec_string ("color_framerate", "Color Framerate",
+          "Change the color Framerate (Default 15)",
+          "",
+          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
+        )
+    );
 }
 
 /* initialize the new element
