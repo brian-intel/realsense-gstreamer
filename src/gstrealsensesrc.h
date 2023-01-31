@@ -81,8 +81,8 @@ struct _GstRealsenseSrc
   std::string serial_number;
   StreamType stream_type = StreamType::StreamDepth;
   bool imu_on = true;
-  int depth_width = 1920;
-  int depth_height = 1080;
+  int depth_width = 1280;
+  int depth_height = 720;
   int depth_framerate = 15;
   int color_width = 1920;
   int color_height = 1080;
