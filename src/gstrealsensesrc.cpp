@@ -267,6 +267,23 @@ gst_realsense_src_set_property (GObject * object, guint prop_id, const GValue * 
     case PROP_IMU_ON:
       src->imu_on = g_value_get_boolean(value);
       break;
+    case PROP_DEPTH_WIDTH:
+      src->depth_width =  g_value_get_int(value);
+      break;
+    case PROP_DEPTH_HEIGHT:
+      src->depth_height =  g_value_get_int(value);
+      break;
+    case PROP_DEPTH_FRAMERATE:
+      src->depth_framerate =  g_value_get_int(value);
+    case PROP_COLOR_WIDTH:
+      src->color_width =  g_value_get_int(value);
+      break;
+    case PROP_COLOR_HEIGHT:
+      src->color_height =  g_value_get_int(value);
+      break;
+    case PROP_COLOR_FRAMERATE:
+      src->color_framerate =  g_value_get_int(value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
