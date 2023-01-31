@@ -182,49 +182,49 @@ gst_realsense_src_class_init (GstRealsenseSrcClass * klass)
     );
 
     g_object_class_install_property (gobject_class, PROP_DEPTH_WIDTH,
-    g_param_spec_string ("depth_width", "Depth Width",
+    g_param_spec_int ("depth_width", "Depth Width",
           "Change the depth width (Default 1920)",
-          "",
+          0,99999,1920,
           (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
         )
     );
 
     g_object_class_install_property (gobject_class, PROP_DEPTH_HEIGHT,
-    g_param_spec_string ("depth_height", "Depth Height",
+    g_param_spec_int ("depth_height", "Depth Height",
           "Change the depth height (Default 1080)",
-          "",
+          0,99999,1080,
           (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
         )
     );
 
     g_object_class_install_property (gobject_class, PROP_DEPTH_FRAMERATE,
-    g_param_spec_string ("depth_framerate", "Depth Framerate",
+    g_param_spec_int ("depth_framerate", "Depth Framerate",
           "Change the depth framerate (Default 15)",
-          "",
+          0,999,15,
           (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
         )
     );
 
     g_object_class_install_property (gobject_class, PROP_COLOR_WIDTH,
-    g_param_spec_string ("color_width", "Color Width",
+    g_param_spec_int ("color_width", "Color Width",
           "Change the color width (Default 1920)",
-          "",
+          0,99999,1920,
           (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
         )
     );
 
     g_object_class_install_property (gobject_class, PROP_COLOR_HEIGHT,
-    g_param_spec_string ("color_height", "Color Height",
+    g_param_spec_int ("color_height", "Color Height",
           "Change the color height (Default 1080)",
-          "",
+          0,99999,1080,
           (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
         )
     );
 
     g_object_class_install_property (gobject_class, PROP_COLOR_FRAMERATE,
-    g_param_spec_string ("color_framerate", "Color Framerate",
+    g_param_spec_int ("color_framerate", "Color Framerate",
           "Change the color Framerate (Default 15)",
-          "",
+          0,999,15,
           (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
         )
     );
